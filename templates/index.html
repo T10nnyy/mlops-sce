@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Price Prediction</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .gradient-background {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            min-height: 100vh;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            margin-top: 0.25rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .submit-button {
+            background-color: #10B981;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .submit-button:hover {
+            background-color: #059669;
+        }
+
+        .result-card {
+            display: none;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .predicted-price {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #10B981;
+        }
+
+        .error-message {
+            color: #DC2626;
+            background-color: #FEE2E2;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #10B981;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="gradient-background py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="glass-effect p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+                Agricultural Commodity Price Predictor
+            </h1>
+            
+            <form id="predictionForm" class="space-y-6">
+                <!-- Location Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">State</label>
+                            <input type="text" name="State" required class="input-field">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">District</label>
+                            <input type="text" name="District" required class="input-field">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Market</label>
+                            <input type="text" name="Market" required class="input-field">
+                        </div>
+                    </div>
+                    
+                    <!-- Commodity Section -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Commodity</label>
+                            <input type="text" name="Commodity" required class="input-field">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Variety</label>
+                            <input type="text" name="Variety" required class="input-field">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Grade</label>
+                            <input type="text" name="Grade" required class="input-field">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Minimum Price (₹)</label>
+                        <input type="number" name="Min Price" required class="input-field">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Maximum Price (₹)</label>
+                        <input type="number" name="Max Price" required class="input-field">
+                    </div>
+                </div>
+
+                <!-- Date Section -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Day</label>
+                        <input type="number" name="Day" min="1" max="31" required class="input-field">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Month</label>
+                        <input type="number" name="Month" min="1" max="12" required class="input-field">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Year</label>
+                        <input type="number" name="Year" min="2000" max="2030" required class="input-field">
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <button type="submit" class="submit-button">
+                        Predict Price
+                    </button>
+                </div>
+            </form>
+
+            <!-- Loading Spinner -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p class="mt-2 text-gray-600">Calculating prediction...</p>
+            </div>
+
+            <!-- Result Section -->
+            <div id="result" class="result-card">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Predicted Modal Price</h2>
+                <p id="predictedPrice" class="predicted-price">₹ 0</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show loading spinner and hide previous results/errors
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            const formData = new FormData(e.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = key.includes('Price') || ['Day', 'Month', 'Year'].includes(key) 
+                    ? Number(value) 
+                    : value;
+            });
+
+            try {
+                const response = await fetch('http://localhost:8080/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                // Hide loading spinner
+                document.getElementById('loading').style.display = 'none';
+                
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('predictedPrice').textContent = 
+                    `₹ ${result['Predicted Modal Price'].toFixed(2)}`;
+            } catch (error) {
+                // Hide loading spinner
+                document.getElementById('loading').style.display = 'none';
+                
+                document.getElementById('result').style.display = 'none';
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
