@@ -1,5 +1,5 @@
 # mlops-sce
-# Crop price app
+# Crop price prediction app
 
 This project hosts a web application that is accessible online.
 
