@@ -25,4 +25,5 @@ You can access the application at:
 If you'd like to set up the project locally:
 
 1. Clone this repository:
+   git clone https://github.com/T10nnyy/mlops-sce.git
    
